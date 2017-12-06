@@ -40,7 +40,10 @@ func (c Config) Run(symbol string, ss ...*string) (interface{}, error) {
 func (c Config) visit(m map[interface{}]interface{}, path []string) error {
 	for k, v := range m {
 		if mm, ok := v.(map[interface{}]interface{}); ok {
-			c.visit(mm, append(path, k.(string)))
+			err := c.visit(mm, append(path, k.(string)))
+			if err != nil {
+				return err
+			}
 		} else if k == "PluginFile" {
 			symbol := path[len(path)-1:][0]
 			p, err := plugin.Open(v.(string))
